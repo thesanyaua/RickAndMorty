@@ -1,9 +1,11 @@
 package com.example.rickandmorty.model;
 
 import android.app.Application;
+import android.os.Build;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -13,6 +15,7 @@ import com.example.rickandmorty.retrofit.ApiClient;
 import com.example.rickandmorty.retrofit.person.Example;
 import com.example.rickandmorty.retrofit.person.Result;
 
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,8 +34,10 @@ public class ApiViewModel extends AndroidViewModel {
         API api = ApiClient.getRetrofit().create(API.class);
         Call<Example> call = api.getPersonInfo();
         call.enqueue(new Callback<Example>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
+                response.body().getResults().sort(Comparator.comparing(Result::getName));
                 person.postValue(response.body().getResults());
             }
 

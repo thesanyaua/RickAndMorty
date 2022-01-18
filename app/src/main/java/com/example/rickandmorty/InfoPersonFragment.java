@@ -19,6 +19,7 @@ import com.example.rickandmorty.R;
 import com.example.rickandmorty.databinding.FragmentInfoPersonBinding;
 import com.example.rickandmorty.databinding.FragmentPersonListBinding;
 import com.example.rickandmorty.model.PersonInfoViewModel;
+import com.example.rickandmorty.retrofit.person.Result;
 
 
 public class InfoPersonFragment extends Fragment {
@@ -48,16 +49,16 @@ public class InfoPersonFragment extends Fragment {
 
         PersonInfoViewModel personInfoViewModel = new ViewModelProvider(this).get(PersonInfoViewModel.class);
 
-        personInfoViewModel.getImagePerson(personID).observe(getViewLifecycleOwner(), s -> Glide.with(getContext()).load(s).into(binding.imagePersonInfo));
-
-        personInfoViewModel.getName().observe(getViewLifecycleOwner(), s -> binding.namePerson.setText(s));
-
-        personInfoViewModel.getGender().observe(getViewLifecycleOwner(), s -> binding.gender.setText(s));
-
-        personInfoViewModel.getLivePerson().observe(getViewLifecycleOwner(), s -> binding.statusLive.setText(s));
-
-        personInfoViewModel.getLocation().observe(getViewLifecycleOwner(), s -> binding.location.setText(s));
-
+        personInfoViewModel.getPerson(personID).observe(getViewLifecycleOwner(), new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                Glide.with(InfoPersonFragment.this).load(result.getImage()).into(binding.imagePersonInfo);
+                binding.namePerson.setText(result.getName());
+                binding.statusLive.setText("Live status: "+result.getStatus());
+                binding.gender.setText("Gender: "+result.getGender());
+                binding.location.setText("From: "+result.getOrigin().getName());
+            }
+        });
 
 
 

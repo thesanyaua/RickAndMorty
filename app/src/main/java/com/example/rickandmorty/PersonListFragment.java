@@ -1,9 +1,11 @@
 package com.example.rickandmorty;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -19,6 +21,7 @@ import com.example.rickandmorty.databinding.FragmentPersonListBinding;
 import com.example.rickandmorty.model.ApiViewModel;
 import com.example.rickandmorty.retrofit.person.Result;
 
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -44,6 +47,7 @@ public class PersonListFragment extends Fragment {
         ApiViewModel apiViewModel = new ViewModelProvider(this).get(ApiViewModel.class);
 
         apiViewModel.getListPerson().observe(getViewLifecycleOwner(), new Observer<List<Result>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChanged(List<Result> results) {
                 PersonListAdapter personListAdapter = new PersonListAdapter(results, getContext());

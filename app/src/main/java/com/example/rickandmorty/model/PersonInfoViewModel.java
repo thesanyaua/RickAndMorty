@@ -18,27 +18,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PersonInfoViewModel extends AndroidViewModel {
-    MutableLiveData<String> imagePerson = new MutableLiveData<>();
-    MutableLiveData<String> namePerson = new MutableLiveData<>();
-    MutableLiveData<String> genderPerson = new MutableLiveData<>();
-    MutableLiveData<String> livePerson = new MutableLiveData<>();
-    MutableLiveData<String> location = new MutableLiveData<>();
+    MutableLiveData<Result> imagePerson = new MutableLiveData<>();
+
 
     public PersonInfoViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public LiveData<String> getImagePerson(String id) {
+    public LiveData<Result> getPerson(String id) {
         API api = ApiClient.getRetrofit().create(API.class);
         api.getAllInfo(id).enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
-                imagePerson.postValue(response.body().getImage());
-                namePerson.postValue(response.body().getName());
-                genderPerson.postValue(response.body().getGender());
-                livePerson.postValue(response.body().getStatus());
-                location.postValue(response.body().getLocation().getName());
-
+                imagePerson.postValue(response.body());
             }
 
             @Override
@@ -48,24 +40,5 @@ public class PersonInfoViewModel extends AndroidViewModel {
         });
         return imagePerson;
     }
-
-    public LiveData<String> getName() {
-        return namePerson;
-    }
-
-    public LiveData<String> getGender() {
-        return genderPerson;
-    }
-
-    public LiveData<String> getLivePerson() {
-        return livePerson;
-    }
-
-    public LiveData<String> getLocation() {
-        return location;
-    }
-
-
-
 
 }
